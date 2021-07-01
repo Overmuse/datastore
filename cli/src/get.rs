@@ -1,11 +1,16 @@
 use crate::{OutputFormat, Resource};
+use anyhow::Result;
 use datastore_client::{Client, GetAggregates, GetDividends, GetSplits};
 use prettytable::Table;
 
-pub async fn get_resource(client: Client<'_>, resource: Resource, format: OutputFormat) {
+pub async fn get_resource(
+    client: Client<'_>,
+    resource: Resource,
+    format: OutputFormat,
+) -> Result<()> {
     match resource {
         Resource::Aggregates => {
-            let data = client.send(GetAggregates {}).await.unwrap();
+            let data = client.send(GetAggregates {}).await?;
             match format {
                 OutputFormat::Table => {
                     let mut table = Table::new();
@@ -21,12 +26,12 @@ pub async fn get_resource(client: Client<'_>, resource: Resource, format: Output
                     table.printstd();
                 }
                 OutputFormat::Json => {
-                    println!("{}", serde_json::to_string_pretty(&data).unwrap())
+                    println!("{}", serde_json::to_string_pretty(&data)?)
                 }
             }
         }
         Resource::Dividends => {
-            let data = client.send(GetDividends {}).await.unwrap();
+            let data = client.send(GetDividends {}).await?;
             match format {
                 OutputFormat::Table => {
                     let mut table = Table::new();
@@ -51,12 +56,12 @@ pub async fn get_resource(client: Client<'_>, resource: Resource, format: Output
                     table.printstd();
                 }
                 OutputFormat::Json => {
-                    println!("{}", serde_json::to_string_pretty(&data).unwrap())
+                    println!("{}", serde_json::to_string_pretty(&data)?)
                 }
             }
         }
         Resource::Splits => {
-            let data = client.send(GetSplits {}).await.unwrap();
+            let data = client.send(GetSplits {}).await?;
             match format {
                 OutputFormat::Table => {
                     let mut table = Table::new();
@@ -81,9 +86,10 @@ pub async fn get_resource(client: Client<'_>, resource: Resource, format: Output
                     table.printstd();
                 }
                 OutputFormat::Json => {
-                    println!("{}", serde_json::to_string_pretty(&data).unwrap())
+                    println!("{}", serde_json::to_string_pretty(&data)?)
                 }
             }
         }
     }
+    Ok(())
 }

@@ -270,9 +270,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "datastore-cli"
+name = "datastore"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "clap",
  "datastore-client",
  "datastore-core",

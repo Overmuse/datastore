@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate prettytable;
+use anyhow::Result;
 use clap::{AppSettings, Clap};
 use datastore_client::Client;
 use std::str::FromStr;
@@ -53,10 +54,10 @@ pub enum Resource {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     let opts: Options = Options::parse();
-    let client = Client::from_env().unwrap();
+    let client = Client::from_env()?;
     match opts.method {
         Method::Get(get) => get_resource(client, get.resource, get.format).await,
-    };
+    }
 }
