@@ -5,4 +5,4 @@ mod routes;
 
 pub use client::Client;
 pub use error::Error;
-pub use routes::GetSplits;
+pub use routes::*;
