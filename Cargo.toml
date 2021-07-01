@@ -1,0 +1,2 @@
+[workspace]
+members = ["cli", "client", "core", "server"]
