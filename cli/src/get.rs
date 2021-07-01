@@ -21,7 +21,7 @@ pub async fn get_resource(client: Client<'_>, resource: Resource, format: Output
                     table.printstd();
                 }
                 OutputFormat::Json => {
-                    println!("{:#?}", serde_json::to_string(&data).unwrap())
+                    println!("{}", serde_json::to_string_pretty(&data).unwrap())
                 }
             }
         }
@@ -51,7 +51,7 @@ pub async fn get_resource(client: Client<'_>, resource: Resource, format: Output
                     table.printstd();
                 }
                 OutputFormat::Json => {
-                    println!("{:#?}", serde_json::to_string(&data).unwrap())
+                    println!("{}", serde_json::to_string_pretty(&data).unwrap())
                 }
             }
         }
@@ -81,7 +81,7 @@ pub async fn get_resource(client: Client<'_>, resource: Resource, format: Output
                     table.printstd();
                 }
                 OutputFormat::Json => {
-                    println!("{:#?}", serde_json::to_string(&data).unwrap())
+                    println!("{}", serde_json::to_string_pretty(&data).unwrap())
                 }
             }
         }
