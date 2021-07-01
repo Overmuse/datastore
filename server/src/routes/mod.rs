@@ -13,6 +13,13 @@ pub use splits::*;
 pub fn routes(db: DbPool) -> impl Filter<Extract = impl warp::Reply, Error = Infallible> + Clone {
     list_aggregates(db.clone())
         .or(list_dividends(db.clone()))
-        .or(list_splits(db.clone()))
+        .or(list_splits(db))
         .recover(handle_rejection)
+        .with(warp::trace(|info| {
+            tracing::info_span!(
+                "request",
+                method = %info.method(),
+                path = %info.path()
+            )
+        }))
 }

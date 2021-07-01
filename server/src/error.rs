@@ -1,6 +1,7 @@
 use serde::Serialize;
 use std::convert::Infallible;
 use thiserror::Error;
+use tracing::error;
 use warp::{http::StatusCode, Rejection, Reply};
 
 #[derive(Debug, Error)]
@@ -8,7 +9,9 @@ pub enum Error {
     #[error("error getting connection from DB pool: {0}")]
     DbPoolError(mobc::Error<tokio_postgres::Error>),
     #[error("error executing DB query: {0}")]
-    DBQueryError(#[from] tokio_postgres::Error),
+    DbQueryError(#[from] tokio_postgres::Error),
+    #[error("error migrating database: {0}")]
+    DbMigrateError(#[from] refinery::Error),
 }
 
 #[derive(Serialize)]
@@ -21,16 +24,20 @@ impl warp::reject::Reject for Error {}
 pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> {
     let code;
     let message;
+    error!("{:?}", err);
 
     if err.is_not_found() {
         code = StatusCode::NOT_FOUND;
         message = "Not Found";
-    } else if let Some(_) = err.find::<warp::filters::body::BodyDeserializeError>() {
+    } else if err
+        .find::<warp::filters::body::BodyDeserializeError>()
+        .is_some()
+    {
         code = StatusCode::BAD_REQUEST;
         message = "Invalid Body";
     } else if let Some(e) = err.find::<Error>() {
         match e {
-            Error::DBQueryError(_) => {
+            Error::DbQueryError(_) => {
                 code = StatusCode::BAD_REQUEST;
                 message = "Could not Execute request";
             }
@@ -40,7 +47,7 @@ pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> 
                 message = "Internal Server Error";
             }
         }
-    } else if let Some(_) = err.find::<warp::reject::MethodNotAllowed>() {
+    } else if err.find::<warp::reject::MethodNotAllowed>().is_some() {
         code = StatusCode::METHOD_NOT_ALLOWED;
         message = "Method Not Allowed";
     } else {

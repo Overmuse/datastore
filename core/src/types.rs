@@ -72,8 +72,8 @@ impl TryFrom<Row> for Aggregate {
             low: row.try_get("low")?,
             close: row.try_get("close")?,
             volume: row.try_get("volume")?,
-            start: row.try_get("start")?,
-            end: row.try_get("end")?,
+            start: row.try_get("start_datetime")?,
+            end: row.try_get("end_datetime")?,
             ticker: row.try_get("ticker")?,
         })
     }

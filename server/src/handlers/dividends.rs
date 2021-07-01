@@ -9,9 +9,9 @@ pub async fn list_dividends(db: DbPool) -> Result<impl warp::Reply, Rejection> {
     let values: Result<Vec<Dividend>, Error> = connection
         .query("SELECT * FROM dividends", &[])
         .await
-        .map_err(Error::DBQueryError)?
+        .map_err(Error::DbQueryError)?
         .into_iter()
-        .map(|v| TryInto::try_into(v).map_err(Error::DBQueryError))
+        .map(|v| TryInto::try_into(v).map_err(Error::DbQueryError))
         .collect();
     Ok(warp::reply::json(&values.map_err(custom)?))
 }

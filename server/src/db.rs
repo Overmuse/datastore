@@ -2,6 +2,7 @@ use crate::error::Error;
 use mobc::{Connection, Pool};
 use mobc_postgres::{tokio_postgres, PgConnectionManager};
 use std::convert::Infallible;
+use std::ops::DerefMut;
 use std::str::FromStr;
 use std::time::Duration;
 use tokio_postgres::{Config, NoTls};
@@ -12,6 +13,11 @@ const DB_POOL_MAX_IDLE: u64 = 8;
 const DB_POOL_TIMEOUT_SECONDS: u64 = 15;
 
 type DbCon = Connection<PgConnectionManager<NoTls>>;
+
+mod embedded {
+    use refinery::embed_migrations;
+    embed_migrations!("migrations");
+}
 
 #[derive(Clone)]
 pub struct DbPool {
@@ -33,6 +39,15 @@ impl DbPool {
 
     pub async fn get_connection(&self) -> Result<DbCon, Error> {
         self.inner.get().await.map_err(Error::DbPoolError)
+    }
+
+    pub async fn migrate(&self) -> Result<(), Error> {
+        let mut connection = self.get_connection().await?;
+        embedded::migrations::runner()
+            .run_async(connection.deref_mut())
+            .await
+            .map_err(Error::DbMigrateError)?;
+        Ok(())
     }
 }
 
