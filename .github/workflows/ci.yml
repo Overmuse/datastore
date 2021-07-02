@@ -116,7 +116,7 @@ jobs:
         uses: actions-rs/tarpaulin@v0.1
         with:
           version: '0.15.0'
-          args: '--out Xml --avoid-cfg-tarpaulin'
+          args: '-- --avoid-cfg-tarpaulin'
       - name: Upload to codecov
         uses: codecov/codecov-action@v1
         with:
