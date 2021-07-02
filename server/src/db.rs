@@ -25,8 +25,12 @@ pub struct DbPool {
 }
 
 impl DbPool {
-    pub fn new() -> Result<DbPool, mobc::Error<tokio_postgres::Error>> {
-        let config = Config::from_str("postgres://postgres:password@0.0.0.0:5432/postgres")?;
+    pub fn new(
+        address: String,
+        db_name: String,
+    ) -> Result<DbPool, mobc::Error<tokio_postgres::Error>> {
+        let full_address = format!("{}/{}", address, db_name);
+        let config = Config::from_str(&full_address)?;
 
         let manager = PgConnectionManager::new(config, NoTls);
         let inner = Pool::builder()
