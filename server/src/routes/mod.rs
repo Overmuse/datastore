@@ -11,15 +11,9 @@ pub use dividends::*;
 pub use splits::*;
 
 pub fn routes(db: DbPool) -> impl Filter<Extract = impl warp::Reply, Error = Infallible> + Clone {
-    list_aggregates(db.clone())
-        .or(list_dividends(db.clone()))
-        .or(list_splits(db))
+    aggregates_routes(db.clone())
+        .or(dividends_routes(db.clone()))
+        .or(splits_routes(db))
         .recover(handle_rejection)
-        .with(warp::trace(|info| {
-            tracing::info_span!(
-                "request",
-                method = %info.method(),
-                path = %info.path()
-            )
-        }))
+        .with(warp::trace::request())
 }

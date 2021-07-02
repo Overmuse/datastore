@@ -15,12 +15,12 @@ pub async fn get_resource(
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
-                        "open", "high", "low", "close", "volume", "start", "end", "ticker",
+                        "id", "open", "high", "low", "close", "volume", "start", "end", "ticker",
                     ]);
                     for agg in data {
                         table.add_row(row![
-                            agg.open, agg.high, agg.low, agg.close, agg.volume, agg.start, agg.end,
-                            agg.ticker,
+                            agg.id, agg.open, agg.high, agg.low, agg.close, agg.volume, agg.start,
+                            agg.end, agg.ticker,
                         ]);
                     }
                     table.printstd();
@@ -36,6 +36,7 @@ pub async fn get_resource(
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
+                        "id",
                         "amount",
                         "declared_date",
                         "ex_date",
@@ -45,6 +46,7 @@ pub async fn get_resource(
                     ]);
                     for dividend in data {
                         table.add_row(row![
+                            dividend.id,
                             dividend.amount,
                             dividend.declared_date,
                             dividend.ex_date,
@@ -66,6 +68,7 @@ pub async fn get_resource(
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
+                        "id",
                         "ratio",
                         "declared_date",
                         "ex_date",
@@ -75,6 +78,7 @@ pub async fn get_resource(
                     ]);
                     for split in data {
                         table.add_row(row![
+                            split.id,
                             split.ratio,
                             split.declared_date,
                             split.ex_date,

@@ -1,6 +1,6 @@
 use anyhow::Result;
 use tracing::subscriber::set_global_default;
-use tracing_subscriber::fmt::Subscriber;
+use tracing_subscriber::{fmt::Subscriber, EnvFilter};
 
 mod db;
 mod error;
@@ -10,7 +10,9 @@ use db::DbPool;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let subscriber = Subscriber::new();
+    let subscriber = Subscriber::builder()
+        .with_env_filter(EnvFilter::from_default_env())
+        .finish();
     set_global_default(subscriber)?;
     let db = DbPool::new()?;
     db.migrate().await?;

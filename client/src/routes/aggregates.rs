@@ -1,4 +1,4 @@
-use crate::request::Request;
+use crate::request::{EmptyResponse, Request, RequestBody};
 use datastore_core::Aggregate;
 use serde::Serialize;
 use std::borrow::Cow;
@@ -12,5 +12,21 @@ impl Request for GetAggregates {
 
     fn endpoint(&self) -> Cow<str> {
         Cow::Borrowed("/aggregates")
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PostAggregate(pub Aggregate);
+
+impl Request for PostAggregate {
+    type Body = Aggregate;
+    type Response = EmptyResponse;
+
+    fn endpoint(&self) -> Cow<str> {
+        Cow::Borrowed("/aggregates")
+    }
+
+    fn body(&self) -> RequestBody<&Self::Body> {
+        RequestBody::Json(&self.0)
     }
 }

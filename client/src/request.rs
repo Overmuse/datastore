@@ -1,5 +1,5 @@
 use reqwest::{header::HeaderMap, Method, RequestBuilder};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use std::borrow::Cow;
 
 pub enum RequestBody<T> {
@@ -27,6 +27,17 @@ pub trait Request {
 
     fn body(&self) -> RequestBody<&Self::Body> {
         Default::default()
+    }
+}
+
+#[derive(Debug)]
+pub struct EmptyResponse;
+impl<'de> Deserialize<'de> for EmptyResponse {
+    fn deserialize<D>(_deserializer: D) -> Result<EmptyResponse, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Ok(EmptyResponse {})
     }
 }
 
