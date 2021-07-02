@@ -111,6 +111,7 @@ pub struct Aggregate {
 }
 
 impl Aggregate {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         open: Decimal,
         high: Decimal,
