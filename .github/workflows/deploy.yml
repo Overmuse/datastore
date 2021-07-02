@@ -68,5 +68,5 @@ jobs:
           DOCKER_BUILDKIT: 1
           IMAGE_TAG: ${{ github.event.release.name }}
         run: |
-          docker build --ssh default -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG server
+          docker build --ssh default -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
