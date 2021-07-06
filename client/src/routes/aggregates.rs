@@ -1,5 +1,6 @@
 use crate::request::{EmptyResponse, Request, RequestBody};
 use datastore_core::Aggregate;
+use reqwest::Method;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -21,6 +22,7 @@ pub struct PostAggregate(pub Aggregate);
 impl Request for PostAggregate {
     type Body = Aggregate;
     type Response = EmptyResponse;
+    const METHOD: Method = Method::POST;
 
     fn endpoint(&self) -> Cow<str> {
         Cow::Borrowed("/aggregates")

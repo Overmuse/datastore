@@ -1,5 +1,6 @@
 use crate::request::{EmptyResponse, Request, RequestBody};
 use datastore_core::Dividend;
+use reqwest::Method;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -21,6 +22,7 @@ pub struct PostDividend(pub Dividend);
 impl Request for PostDividend {
     type Body = Dividend;
     type Response = EmptyResponse;
+    const METHOD: Method = Method::POST;
 
     fn endpoint(&self) -> Cow<str> {
         Cow::Borrowed("/dividends")
