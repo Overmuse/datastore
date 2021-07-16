@@ -1,6 +1,6 @@
 use crate::{OutputFormat, Resource};
 use anyhow::Result;
-use datastore_client::{Client, GetAggregates, GetDividends, GetSplits};
+use datastore_client::{Client, GetDividends, GetSplits, ListAggregates};
 use prettytable::Table;
 
 pub async fn get_resource(
@@ -10,17 +10,22 @@ pub async fn get_resource(
 ) -> Result<()> {
     match resource {
         Resource::Aggregates => {
-            let data = client.send(GetAggregates {}).await?;
+            let data = client.send(ListAggregates {}).await?;
             match format {
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
-                        "id", "open", "high", "low", "close", "volume", "start", "end", "ticker",
+                        "open", "high", "low", "close", "volume", "datetime", "ticker",
                     ]);
                     for agg in data {
                         table.add_row(row![
-                            agg.id, agg.open, agg.high, agg.low, agg.close, agg.volume, agg.start,
-                            agg.end, agg.ticker,
+                            agg.open,
+                            agg.high,
+                            agg.low,
+                            agg.close,
+                            agg.volume,
+                            agg.datetime,
+                            agg.ticker,
                         ]);
                     }
                     table.printstd();
@@ -36,7 +41,6 @@ pub async fn get_resource(
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
-                        "id",
                         "amount",
                         "declared_date",
                         "ex_date",
@@ -46,7 +50,6 @@ pub async fn get_resource(
                     ]);
                     for dividend in data {
                         table.add_row(row![
-                            dividend.id,
                             dividend.amount,
                             dividend.declared_date,
                             dividend.ex_date,
@@ -68,7 +71,6 @@ pub async fn get_resource(
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
-                        "id",
                         "ratio",
                         "declared_date",
                         "ex_date",
@@ -78,7 +80,6 @@ pub async fn get_resource(
                     ]);
                     for split in data {
                         table.add_row(row![
-                            split.id,
                             split.ratio,
                             split.declared_date,
                             split.ex_date,
