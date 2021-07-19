@@ -8,31 +8,31 @@ use tokio_postgres::types::ToSql;
 use warp::reject::{custom, Rejection};
 
 pub async fn get_aggregates(
-    ticker: Option<String>,
-    start: Option<NaiveDate>,
-    end: Option<NaiveDate>,
+    maybe_ticker: Option<String>,
+    maybe_start: Option<NaiveDate>,
+    maybe_end: Option<NaiveDate>,
     db: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    let tick;
-    let s;
-    let e;
+    let ticker;
+    let start;
+    let end;
     let connection = db.get_connection().await?;
     let mut query = "SELECT * FROM daily_aggregates".to_string();
     let mut params: Vec<&(dyn ToSql + Sync)> = Vec::new();
-    if let Some(ticker) = ticker {
-        tick = ticker;
+    if let Some(t) = maybe_ticker {
+        ticker = t;
         query.push_str(" WHERE ticker = $1");
-        params.push(&tick);
+        params.push(&ticker);
     }
-    if let Some(start) = start {
-        s = Utc.from_utc_datetime(&start.and_hms(0, 0, 0));
+    if let Some(s) = maybe_start {
+        start = Utc.from_utc_datetime(&s.and_hms(0, 0, 0));
         query.push_str(" AND datetime >= $2");
-        params.push(&s);
+        params.push(&start);
     }
-    if let Some(end) = end {
-        e = Utc.from_utc_datetime(&end.and_hms(23, 59, 59));
+    if let Some(e) = maybe_end {
+        end = Utc.from_utc_datetime(&e.and_hms(23, 59, 59));
         query.push_str(" AND datetime <= $3");
-        params.push(&e);
+        params.push(&end);
     }
     query.push_str(";");
     let values: Result<Vec<Aggregate>, Error> = connection
@@ -51,7 +51,7 @@ pub async fn store_aggregate(
 ) -> Result<impl warp::Reply, Rejection> {
     let connection = db.get_connection().await?;
     connection.execute(
-        "INSERT INTO daily_aggregates (open, high, low, close, volume, datetime, ticker) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        "INSERT INTO daily_aggregates (open, high, low, close, volume, datetime, ticker) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (datetime, ticker) DO NOTHING",
         &[&aggregate.open, &aggregate.high, &aggregate.low, &aggregate.close, &aggregate.volume, &aggregate.datetime, &aggregate.ticker]).await.map_err(Error::DbQueryError)?;
     Ok(warp::reply::reply())
 }
@@ -74,7 +74,7 @@ pub async fn backfill_aggregates(
         if let Some(aggs) = res.results {
             for aggregate in aggs {
                 connection.execute(
-                    "INSERT INTO daily_aggregates (open, high, low, close, volume, datetime, ticker) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                    "INSERT INTO daily_aggregates (open, high, low, close, volume, datetime, ticker) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (datetime, ticker) DO NOTHING",
                     &[&aggregate.o, &aggregate.h, &aggregate.l, &aggregate.c, &aggregate.v, &aggregate.t, &ticker]
                 ).await.unwrap();
             }

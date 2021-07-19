@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate prettytable;
 use anyhow::Result;
+use chrono::NaiveDate;
 use clap::{AppSettings, Clap};
 use datastore_client::Client;
 use std::str::FromStr;
@@ -27,6 +28,12 @@ struct Get {
     format: OutputFormat,
     #[clap(arg_enum)]
     resource: Resource,
+    #[clap()]
+    ticker: Option<String>,
+    #[clap()]
+    start_date: Option<NaiveDate>,
+    #[clap()]
+    end_date: Option<NaiveDate>,
 }
 
 #[derive(Clap, Debug)]
@@ -58,6 +65,9 @@ async fn main() -> Result<()> {
     let opts: Options = Options::parse();
     let client = Client::from_env()?;
     match opts.method {
-        Method::Get(get) => get_resource(client, get.resource, get.format).await,
+        Method::Get(get) => {
+            let dates = get.start_date.zip(get.end_date);
+            get_resource(client, get.resource, get.ticker, dates, get.format).await
+        }
     }
 }

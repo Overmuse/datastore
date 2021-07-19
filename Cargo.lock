@@ -290,10 +290,12 @@ name = "datastore"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "chrono",
  "clap",
  "datastore-client",
  "datastore-core",
  "prettytable-rs",
+ "serde 1.0.126",
  "serde_json",
  "tokio",
 ]

@@ -5,10 +5,29 @@ use reqwest::Method;
 use serde::Serialize;
 use std::borrow::Cow;
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Default, Clone, Serialize)]
 pub struct GetAggregates {
-    ticker: Option<String>,
-    dates: Option<(NaiveDate, NaiveDate)>,
+    pub ticker: Option<String>,
+    pub dates: Option<(NaiveDate, NaiveDate)>,
+}
+
+impl GetAggregates {
+    pub fn new() -> Self {
+        Self {
+            ticker: None,
+            dates: None,
+        }
+    }
+
+    pub fn ticker<T: ToString>(mut self, ticker: T) -> Self {
+        self.ticker = Some(ticker.to_string());
+        self
+    }
+
+    pub fn dates(mut self, dates: (NaiveDate, NaiveDate)) -> Self {
+        self.dates = Some(dates);
+        self
+    }
 }
 
 impl Request for GetAggregates {
