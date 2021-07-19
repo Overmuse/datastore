@@ -287,20 +287,22 @@ dependencies = [
 
 [[package]]
 name = "datastore"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
+ "chrono",
  "clap",
  "datastore-client",
  "datastore-core",
  "prettytable-rs",
+ "serde 1.0.126",
  "serde_json",
  "tokio",
 ]
 
 [[package]]
 name = "datastore-client"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "datastore-core",
@@ -315,25 +317,27 @@ dependencies = [
 
 [[package]]
 name = "datastore-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "rust_decimal",
  "serde 1.0.126",
  "tokio-postgres",
- "uuid",
 ]
 
 [[package]]
 name = "datastore-server"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
+ "chrono",
  "config",
  "datastore-core",
  "dotenv",
+ "iex",
  "mobc",
  "mobc-postgres",
+ "polygon",
  "refinery",
  "serde 1.0.126",
  "thiserror",
@@ -370,6 +374,12 @@ name = "dotenv"
 version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
+
+[[package]]
+name = "either"
+version = "1.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "encode_unicode"
@@ -716,6 +726,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "iex"
+version = "0.1.1"
+source = "git+ssh://git@github.com/Overmuse/iex?tag=v0.1.1#c9e7437fa587e55e591292fa28885a153711a950"
+dependencies = [
+ "chrono",
+ "futures",
+ "itertools",
+ "reqwest",
+ "rust_decimal",
+ "serde 1.0.126",
+ "serde_json",
+ "serde_repr",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
 name = "indexmap"
 version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -748,6 +775,15 @@ name = "ipnet"
 version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68f2d64f2edebec4ce84ad108148e67e1064789bee435edc5b60ad398714a3a9"
+
+[[package]]
+name = "itertools"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "69ddb889f9d0d08a67338271fa9b62996bc788c7796a5c18cf057420aaed5eaf"
+dependencies = [
+ "either",
+]
 
 [[package]]
 name = "itoa"
@@ -1140,6 +1176,23 @@ name = "pkg-config"
 version = "0.3.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3831453b3449ceb48b6d9c7ad7c96d5ea673e9b470a1dc578c2ce6521230884c"
+
+[[package]]
+name = "polygon"
+version = "0.10.2"
+source = "git+ssh://git@github.com/Overmuse/polygon?tag=v0.10.2#0072dfb02331e698689df61204211c0f10803d04"
+dependencies = [
+ "chrono",
+ "futures",
+ "itertools",
+ "reqwest",
+ "rust_decimal",
+ "serde 1.0.126",
+ "serde_json",
+ "serde_repr",
+ "thiserror",
+ "tracing",
+]
 
 [[package]]
 name = "postgres"
@@ -1633,6 +1686,17 @@ dependencies = [
  "itoa",
  "ryu",
  "serde 1.0.126",
+]
+
+[[package]]
+name = "serde_repr"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "98d0516900518c29efa217c298fa1f4e6c6ffc85ae29fd7f4ee48f176e1a9ed5"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -2147,7 +2211,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 dependencies = [
  "getrandom 0.2.3",
- "serde 1.0.126",
 ]
 
 [[package]]

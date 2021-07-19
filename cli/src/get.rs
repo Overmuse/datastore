@@ -1,26 +1,34 @@
 use crate::{OutputFormat, Resource};
 use anyhow::Result;
+use chrono::NaiveDate;
 use datastore_client::{Client, GetAggregates, GetDividends, GetSplits};
 use prettytable::Table;
 
 pub async fn get_resource(
     client: Client<'_>,
     resource: Resource,
+    ticker: Option<String>,
+    dates: Option<(NaiveDate, NaiveDate)>,
     format: OutputFormat,
 ) -> Result<()> {
     match resource {
         Resource::Aggregates => {
-            let data = client.send(GetAggregates {}).await?;
+            let data = client.send(GetAggregates { ticker, dates }).await?;
             match format {
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
-                        "id", "open", "high", "low", "close", "volume", "start", "end", "ticker",
+                        "datetime", "ticker", "open", "high", "low", "close", "volume",
                     ]);
                     for agg in data {
                         table.add_row(row![
-                            agg.id, agg.open, agg.high, agg.low, agg.close, agg.volume, agg.start,
-                            agg.end, agg.ticker,
+                            agg.datetime,
+                            agg.ticker,
+                            agg.open,
+                            agg.high,
+                            agg.low,
+                            agg.close,
+                            agg.volume,
                         ]);
                     }
                     table.printstd();
@@ -31,28 +39,26 @@ pub async fn get_resource(
             }
         }
         Resource::Dividends => {
-            let data = client.send(GetDividends {}).await?;
+            let data = client.send(GetDividends { ticker, dates }).await?;
             match format {
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
-                        "id",
+                        "ticker",
                         "amount",
                         "declared_date",
                         "ex_date",
                         "record_date",
                         "payment_date",
-                        "ticker",
                     ]);
                     for dividend in data {
                         table.add_row(row![
-                            dividend.id,
+                            dividend.ticker,
                             dividend.amount,
                             dividend.declared_date,
                             dividend.ex_date,
                             dividend.record_date,
                             dividend.payment_date,
-                            dividend.ticker
                         ]);
                     }
                     table.printstd();
@@ -63,26 +69,24 @@ pub async fn get_resource(
             }
         }
         Resource::Splits => {
-            let data = client.send(GetSplits {}).await?;
+            let data = client.send(GetSplits { ticker, dates }).await?;
             match format {
                 OutputFormat::Table => {
                     let mut table = Table::new();
                     table.add_row(row![
-                        "id",
+                        "ticker",
                         "ratio",
                         "declared_date",
                         "ex_date",
-                        "ticker",
                         "from_factor",
                         "to_factor"
                     ]);
                     for split in data {
                         table.add_row(row![
-                            split.id,
+                            split.ticker,
                             split.ratio,
                             split.declared_date,
                             split.ex_date,
-                            split.ticker,
                             split.from_factor,
                             split.to_factor
                         ]);

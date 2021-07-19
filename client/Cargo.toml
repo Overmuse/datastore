@@ -1,11 +1,12 @@
 [package]
 name = "datastore-client"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+chrono = "0.4.19"
 datastore-core = { path = "../core" }
 futures = "0.3.15"
 reqwest = { version = "0.11.4", features = ["json"] }
