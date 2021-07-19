@@ -36,7 +36,6 @@ pub async fn get_dividends(
         query.push_str(" AND ex_date <= $3");
         params.push(&end);
     }
-    query.push_str(";");
     let values: Result<Vec<Dividend>, Error> = connection
         .query(query.as_str(), params.as_slice())
         .await

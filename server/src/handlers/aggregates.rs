@@ -34,7 +34,6 @@ pub async fn get_aggregates(
         query.push_str(" AND datetime <= $3");
         params.push(&end);
     }
-    query.push_str(";");
     let values: Result<Vec<Aggregate>, Error> = connection
         .query(query.as_str(), params.as_slice())
         .await

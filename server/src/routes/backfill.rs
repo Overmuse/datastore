@@ -34,5 +34,5 @@ pub fn backfill_routes(
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     backfill_aggregates(db.clone())
         .or(backfill_dividends(db.clone()))
-        .or(backfill_splits(db.clone()))
+        .or(backfill_splits(db))
 }
