@@ -287,7 +287,7 @@ dependencies = [
 
 [[package]]
 name = "datastore"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -302,7 +302,7 @@ dependencies = [
 
 [[package]]
 name = "datastore-client"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "datastore-core",
@@ -317,7 +317,7 @@ dependencies = [
 
 [[package]]
 name = "datastore-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -327,7 +327,7 @@ dependencies = [
 
 [[package]]
 name = "datastore-server"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "chrono",
