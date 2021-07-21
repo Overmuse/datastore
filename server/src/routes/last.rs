@@ -9,7 +9,7 @@ pub fn get_last_price(
     warp::path!("last" / String)
         .and(warp::get())
         .and(with_redis(redis))
-        .and_then(|ticker, redis| handlers::last::get_last_price(ticker, redis))
+        .and_then(handlers::last::get_last_price)
 }
 
 pub fn last_routes(

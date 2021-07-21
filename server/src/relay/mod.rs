@@ -21,12 +21,10 @@ impl Relay {
         while let Some(Ok(msg)) = stream.next().await {
             if let Some(payload) = msg.payload() {
                 let maybe = serde_json::from_slice::<PolygonMessage>(payload);
-                if let Ok(polygon_msg) = maybe {
-                    if let PolygonMessage::Trade(trade) = polygon_msg {
-                        if trade.is_eligible() {
-                            let key = format!("price/{}", trade.symbol);
-                            let _ = self.redis.set(&key, trade.price.to_f64().unwrap()).await;
-                        }
+                if let Ok(PolygonMessage::Trade(trade)) = maybe {
+                    if trade.is_eligible() {
+                        let key = format!("price/{}", trade.symbol);
+                        let _ = self.redis.set(&key, trade.price.to_f64().unwrap()).await;
                     }
                 }
             }

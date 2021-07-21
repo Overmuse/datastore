@@ -69,7 +69,7 @@ pub async fn get_resource(
             }
         }
         Resource::Last => {
-            let ticker = ticker.ok_or(anyhow!("Missing ticker"))?;
+            let ticker = ticker.ok_or_else(|| anyhow!("Missing ticker"))?;
             let data = client.send(GetLast { ticker }).await?;
             println!("{:?}", data);
         }
