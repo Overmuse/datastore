@@ -110,6 +110,8 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - name: Initiate redis
+        run: ./scripts/init_redis.sh
       - name: Initiate postgres
         run: ./scripts/init_db.sh
       - name: Run cargo-tarpaulin

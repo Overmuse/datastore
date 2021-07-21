@@ -1,6 +1,6 @@
 [package]
 name = "datastore-server"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -11,12 +11,19 @@ chrono = "0.4.19"
 config = "0.11.0"
 datastore-core = { path = "../core" }
 dotenv = "0.15.0"
+futures = "0.3.15"
 iex = { git = "ssh://git@github.com/Overmuse/iex", tag = "v0.1.1" }
+kafka-settings = { git = "ssh://git@github.com/Overmuse/kafka-settings", tag = "v0.3.3" }
 mobc = "0.7.3"
 mobc-postgres = "0.7.0"
-polygon = { git = "ssh://git@github.com/Overmuse/polygon", tag = "v0.10.2", default-features = false, features = ["rest"] }
+mobc-redis = "0.7.0"
+polygon = { git = "ssh://git@github.com/Overmuse/polygon", tag = "v0.11.0" }
+rdkafka = { version = "0.26.0", features = ["ssl-vendored"] }
+redis = { version = "0.19.0", features = ["aio", "tokio-comp"] }
 refinery = { version = "0.5.0", features = ["tokio-postgres"] }
+rust_decimal = "1.14.3"
 serde = "1.0.126"
+serde_json = "1.0.64"
 thiserror = "1.0.25"
 tokio = { version = "1.7.1", features = ["macros", "rt"] }
 tokio-postgres = "0.7.2"

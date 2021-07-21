@@ -12,6 +12,10 @@ pub enum Error {
     DbQueryError(#[from] tokio_postgres::Error),
     #[error("error migrating database: {0}")]
     DbMigrateError(#[from] refinery::Error),
+    #[error("error getting connection from redis pool: {0}")]
+    RedisPoolError(mobc::Error<mobc_redis::redis::RedisError>),
+    #[error("error executing redis query: {0}")]
+    RedisError(#[from] mobc_redis::redis::RedisError),
 }
 
 #[derive(Serialize)]

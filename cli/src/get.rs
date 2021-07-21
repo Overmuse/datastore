@@ -1,7 +1,7 @@
 use crate::{OutputFormat, Resource};
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use chrono::NaiveDate;
-use datastore_client::{Client, GetAggregates, GetDividends, GetSplits};
+use datastore_client::{Client, GetAggregates, GetDividends, GetLast, GetSplits};
 use prettytable::Table;
 
 pub async fn get_resource(
@@ -67,6 +67,11 @@ pub async fn get_resource(
                     println!("{}", serde_json::to_string_pretty(&data)?)
                 }
             }
+        }
+        Resource::Last => {
+            let ticker = ticker.ok_or_else(|| anyhow!("Missing ticker"))?;
+            let data = client.send(GetLast { ticker }).await?;
+            println!("{:?}", data);
         }
         Resource::Splits => {
             let data = client.send(GetSplits { ticker, dates }).await?;
