@@ -1,10 +1,16 @@
 use config::{Config, ConfigError, Environment};
+use kafka_settings::KafkaSettings;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct Database {
+pub struct DatabaseSettings {
     pub url: String,
     pub name: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RedisSettings {
+    pub url: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -14,7 +20,9 @@ pub struct WebServerSettings {
 
 #[derive(Debug, Deserialize)]
 pub struct Settings {
-    pub database: Database,
+    pub database: DatabaseSettings,
+    pub kafka: KafkaSettings,
+    pub redis: RedisSettings,
     pub webserver: WebServerSettings,
 }
 
