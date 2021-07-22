@@ -40,7 +40,9 @@ impl Redis {
         value: T,
     ) -> Result<(), Error> {
         let mut con = self.get_connection().await?;
-        con.set(key, value).await.map_err(Error::RedisError)
+        con.set_ex(key, value, 60 * 60 * 24)
+            .await
+            .map_err(Error::RedisError)
     }
 }
 
