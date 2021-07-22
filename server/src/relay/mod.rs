@@ -26,6 +26,13 @@ impl Relay {
                         let key = format!("price/{}", trade.symbol);
                         let _ = self.redis.set(&key, trade.price.to_f64().unwrap()).await;
                     }
+                    if trade.is_opening() {
+                        let key = format!("open/{}", trade.symbol);
+                        let _ = self.redis.set(&key, trade.price.to_f64().unwrap()).await;
+                    } else if trade.is_closing() {
+                        let key = format!("close/{}", trade.symbol);
+                        let _ = self.redis.set(&key, trade.price.to_f64().unwrap()).await;
+                    }
                 }
             }
         }

@@ -56,8 +56,10 @@ impl FromStr for OutputFormat {
 #[derive(Clap, Debug)]
 pub enum Resource {
     Aggregates,
+    Close,
     Dividends,
     Last,
+    Open,
     Splits,
 }
 
