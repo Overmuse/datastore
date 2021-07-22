@@ -75,7 +75,8 @@ pub async fn get_resource(
             let data = client.send(GetLast { ticker }).await?;
             println!(
                 "{}",
-                data.map(|x| format!("{}", x)).unwrap_or("".to_string())
+                data.map(|x| format!("{}", x))
+                    .unwrap_or_else(|| "".to_string())
             );
         }
         Resource::Open => {
@@ -83,7 +84,8 @@ pub async fn get_resource(
             let data = client.send(GetLastOpen { ticker }).await?;
             println!(
                 "{}",
-                data.map(|x| format!("{}", x)).unwrap_or("".to_string())
+                data.map(|x| format!("{}", x))
+                    .unwrap_or_else(|| "".to_string())
             );
         }
         Resource::Close => {
@@ -91,7 +93,8 @@ pub async fn get_resource(
             let data = client.send(GetLastClose { ticker }).await?;
             println!(
                 "{}",
-                data.map(|x| format!("{}", x)).unwrap_or("".to_string())
+                data.map(|x| format!("{}", x))
+                    .unwrap_or_else(|| "".to_string())
             );
         }
         Resource::Splits => {
