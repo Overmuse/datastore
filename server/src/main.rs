@@ -18,6 +18,7 @@ use settings::Settings;
 async fn main() -> Result<()> {
     dotenv::dotenv().ok();
     let subscriber = Subscriber::builder()
+        .json()
         .with_env_filter(EnvFilter::from_default_env())
         .finish();
     set_global_default(subscriber)?;
