@@ -40,16 +40,16 @@ impl Relay {
                     serde_json::from_slice::<PolygonMessage>(payload)
                 {
                     if trade.is_eligible() {
-                        trace!(ticker = %trade.symbol, price = %trade.price, "Trade");
+                        trace!(ticker = %trade.symbol, price = %trade.price, exchange = trade.exchange_id, size = trade.size, "Trade");
                         let key = format!("price/{}", trade.symbol);
                         let _ = self.redis.set(&key, convert_price(trade.price)?).await;
                     }
                     if trade.is_opening() {
-                        debug!(ticker = %trade.symbol, price = %trade.price, "Open");
+                        debug!(ticker = %trade.symbol, price = %trade.price, exchange = trade.exchange_id, size = trade.size, "Open");
                         let key = format!("open/{}", trade.symbol);
                         let _ = self.redis.set(&key, convert_price(trade.price)?).await;
                     } else if trade.is_closing() {
-                        debug!(ticker = %trade.symbol, price = %trade.price, "Close");
+                        debug!(ticker = %trade.symbol, price = %trade.price, exchange = trade.exchange_id, size = trade.size, "Close");
                         let key = format!("close/{}", trade.symbol);
                         let _ = self.redis.set(&key, convert_price(trade.price)?).await;
                     }
