@@ -37,9 +37,9 @@ pub async fn get_aggregates(
     let values: Result<Vec<Aggregate>, Error> = connection
         .query(query.as_str(), params.as_slice())
         .await
-        .map_err(Error::DbQueryError)?
+        .map_err(Error::DbQuery)?
         .into_iter()
-        .map(|v| TryInto::try_into(v).map_err(Error::DbQueryError))
+        .map(|v| TryInto::try_into(v).map_err(Error::DbQuery))
         .collect();
     Ok(warp::reply::json(&values.map_err(custom)?))
 }
@@ -51,7 +51,7 @@ pub async fn store_aggregate(
     let connection = db.get_connection().await?;
     connection.execute(
         "INSERT INTO daily_aggregates (open, high, low, close, volume, datetime, ticker) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (datetime, ticker) DO NOTHING",
-        &[&aggregate.open, &aggregate.high, &aggregate.low, &aggregate.close, &aggregate.volume, &aggregate.datetime, &aggregate.ticker]).await.map_err(Error::DbQueryError)?;
+        &[&aggregate.open, &aggregate.high, &aggregate.low, &aggregate.close, &aggregate.volume, &aggregate.datetime, &aggregate.ticker]).await.map_err(Error::DbQuery)?;
     Ok(warp::reply::reply())
 }
 

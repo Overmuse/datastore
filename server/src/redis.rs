@@ -26,12 +26,12 @@ impl Redis {
     }
 
     async fn get_connection(&self) -> Result<Connection<RedisConnectionManager>, Error> {
-        self.pool.get().await.map_err(Error::RedisPoolError)
+        self.pool.get().await.map_err(Error::RedisPool)
     }
 
     pub async fn get<T: Send + FromRedisValue>(&self, key: &str) -> Result<T, Error> {
         let mut con = self.get_connection().await?;
-        con.get::<&str, T>(key).await.map_err(Error::RedisError)
+        con.get::<&str, T>(key).await.map_err(Error::Redis)
     }
 
     pub async fn set<T: ToRedisArgs + Send + Sync>(
@@ -42,11 +42,8 @@ impl Redis {
     ) -> Result<(), Error> {
         let mut con = self.get_connection().await?;
         match timeout {
-            Some(timeout) => con
-                .set_ex(key, value, timeout)
-                .await
-                .map_err(Error::RedisError),
-            None => con.set(key, value).await.map_err(Error::RedisError),
+            Some(timeout) => con.set_ex(key, value, timeout).await.map_err(Error::Redis),
+            None => con.set(key, value).await.map_err(Error::Redis),
         }
     }
 }

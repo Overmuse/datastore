@@ -7,15 +7,15 @@ use warp::{http::StatusCode, Rejection, Reply};
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("error getting connection from DB pool: {0}")]
-    DbPoolError(mobc::Error<tokio_postgres::Error>),
+    DbPool(mobc::Error<tokio_postgres::Error>),
     #[error("error executing DB query: {0}")]
-    DbQueryError(#[from] tokio_postgres::Error),
+    DbQuery(#[from] tokio_postgres::Error),
     #[error("error migrating database: {0}")]
-    DbMigrateError(#[from] refinery::Error),
+    DbMigrate(#[from] refinery::Error),
     #[error("error getting connection from redis pool: {0}")]
-    RedisPoolError(mobc::Error<mobc_redis::redis::RedisError>),
+    RedisPool(mobc::Error<mobc_redis::redis::RedisError>),
     #[error("error executing redis query: {0}")]
-    RedisError(#[from] mobc_redis::redis::RedisError),
+    Redis(#[from] mobc_redis::redis::RedisError),
 }
 
 #[derive(Serialize)]
@@ -37,7 +37,7 @@ pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> 
         (StatusCode::BAD_REQUEST, "Invalid Body")
     } else if let Some(e) = err.find::<Error>() {
         match e {
-            Error::DbQueryError(_) => (StatusCode::BAD_REQUEST, "Could not Execute request"),
+            Error::DbQuery(_) => (StatusCode::BAD_REQUEST, "Could not Execute request"),
             _ => {
                 error!("unhandled application error: {:?}", err);
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error")
