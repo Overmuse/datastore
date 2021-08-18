@@ -42,7 +42,7 @@ impl DbPool {
     }
 
     pub async fn get_connection(&self) -> Result<DbCon, Error> {
-        self.inner.get().await.map_err(Error::DbPoolError)
+        self.inner.get().await.map_err(Error::DbPool)
     }
 
     pub async fn migrate(&self) -> Result<(), Error> {
@@ -50,7 +50,7 @@ impl DbPool {
         embedded::migrations::runner()
             .run_async(connection.deref_mut())
             .await
-            .map_err(Error::DbMigrateError)?;
+            .map_err(Error::DbMigrate)?;
         Ok(())
     }
 }

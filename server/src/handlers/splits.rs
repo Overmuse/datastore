@@ -39,9 +39,9 @@ pub async fn get_splits(
     let values: Result<Vec<Split>, Error> = connection
         .query(query.as_str(), params.as_slice())
         .await
-        .map_err(Error::DbQueryError)?
+        .map_err(Error::DbQuery)?
         .into_iter()
-        .map(|v| TryInto::try_into(v).map_err(Error::DbQueryError))
+        .map(|v| TryInto::try_into(v).map_err(Error::DbQuery))
         .collect();
     Ok(warp::reply::json(&values.map_err(custom)?))
 }
@@ -50,7 +50,7 @@ pub async fn store_split(split: Split, db: DbPool) -> Result<impl warp::Reply, R
     let connection = db.get_connection().await?;
     connection.execute(
         "INSERT INTO splits (ratio, declared_date, ex_date, ticker, from_factor, to_factor) VALUES ($1, $2, $3, $4, $5, $6)",
-        &[&split.ratio, &split.declared_date, &split.ex_date, &split.ticker, &split.from_factor, &split.to_factor]).await.map_err(Error::DbQueryError)?;
+        &[&split.ratio, &split.declared_date, &split.ex_date, &split.ticker, &split.from_factor, &split.to_factor]).await.map_err(Error::DbQuery)?;
     Ok(warp::reply::reply())
 }
 
