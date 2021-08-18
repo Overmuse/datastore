@@ -38,11 +38,16 @@ impl Redis {
         &self,
         key: &str,
         value: T,
+        timeout: Option<usize>,
     ) -> Result<(), Error> {
         let mut con = self.get_connection().await?;
-        con.set_ex(key, value, 60 * 60 * 24)
-            .await
-            .map_err(Error::RedisError)
+        match timeout {
+            Some(timeout) => con
+                .set_ex(key, value, timeout)
+                .await
+                .map_err(Error::RedisError),
+            None => con.set(key, value).await.map_err(Error::RedisError),
+        }
     }
 }
 
