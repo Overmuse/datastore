@@ -7,11 +7,13 @@ use warp::Filter;
 mod aggregates;
 mod backfill;
 mod dividends;
+mod health;
 mod last;
 mod splits;
 pub use aggregates::*;
 pub use backfill::*;
 pub use dividends::*;
+pub use health::*;
 pub use last::*;
 pub use splits::*;
 
@@ -22,6 +24,7 @@ pub fn routes(
     aggregates_routes(db.clone())
         .or(backfill_routes(db.clone()))
         .or(dividends_routes(db.clone()))
+        .or(health_routes(redis.clone()))
         .or(last_routes(redis))
         .or(splits_routes(db))
         .recover(handle_rejection)
