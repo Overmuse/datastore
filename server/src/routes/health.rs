@@ -15,5 +15,5 @@ pub fn health_check(
 pub fn health_routes(
     redis: Redis,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    health_check(redis.clone())
+    health_check(redis)
 }
